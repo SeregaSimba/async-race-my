@@ -1,0 +1,31 @@
+.header {
+  background-color: aqua;
+  width: 100%;
+  height: 15vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.iconHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.navHeader {
+  width: 50px;
+  height: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  margin-right: 5px;
+}
+
+.span1 {
+  background-color: black;
+  width: 100%;
+  height: 5px;
+}
