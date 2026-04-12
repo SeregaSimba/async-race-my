@@ -8,3 +8,11 @@
   justify-content: center;
   flex-direction: column;
 }
+
+.pErrorName {
+  color: red;
+}
+
+.pErrorPass {
+  color: red;
+}

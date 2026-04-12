@@ -16,7 +16,8 @@ export default function Header() {
   sectionIconHeader.appendChild(imgIcon);
 
   const NameUser = CreateEl("h2", "nameUser");
-  NameUser.innerText = "My Name";
+  NameUser.id = "titleNameUser";
+  NameUser.innerText = "";
   sectionIconHeader.appendChild(NameUser);
 
   const imgHeader = CreateEl("img", "imgHeaderIcon");

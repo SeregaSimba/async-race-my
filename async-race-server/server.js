@@ -1,114 +1,119 @@
-import express from "express";
-import cors from "cors";
-import { readFile, writeFile, access } from "fs/promises";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
-const app = express();
-const PORT = 3000;
-const DATA_FILE = join(__dirname, "cars.json");
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-// Работа с файлами
-async function initData() {
-  try {
-    await access(DATA_FILE);
-  } catch {
-    await writeFile(DATA_FILE, JSON.stringify({ cars: [] }, null, 2));
-  }
-}
+const jsonServer = require('json-server');
 
-async function loadCars() {
-  const data = await readFile(DATA_FILE, "utf8");
-  return JSON.parse(data).cars;
-}
+const db = {
+    garage: [
+        {
+            "name": "Tesla",
+            "color": "#e6e6fa",
+            "id": 1,
+        },
+        {
+            "name": "BMW",
+            "color": "#fede00",
+            "id": 2,
+        },
+        {
+            "name": "Mersedes",
+            "color": "#6c779f",
+            "id": 3,
+        },
+        {
+            "name": "Ford",
+            "color": "#ef3c40",
+            "id": 4,
+        },
+    ],
+    winners: [
+        {
+            id: 1,
+            wins: 1,
+            time: 10,
+        }
+    ]
+};
 
-async function saveCars(cars) {
-  await writeFile(DATA_FILE, JSON.stringify({ cars }, null, 2));
-}
+const server = jsonServer.create();
+const router = jsonServer.router(db);
+const middlewares = jsonServer.defaults();
 
-// Инициализация
-await initData();
+const PORT = process.env.PORT || 3000;
 
-// === API МАШИНОК ===
-app.get("/api/cars", async (req, res) => {
-  const cars = await loadCars();
-  res.json(cars);
+const state = { velocity: {}, blocked: {} };
+
+server.use(middlewares);
+
+const STATUS = {
+    STARTED: 'started',
+    STOPPED: 'stopped',
+    DRIVE: 'drive',
+};
+
+server.patch('/engine', (req, res) => {
+    const { id, status } = req.query;
+
+    if (!id || Number.isNaN(+id) || +id <= 0) {
+        return res.status(400).send('Required parameter "id" is missing. Should be a positive number');
+    }
+
+    if (!status || !/^(started)|(stopped)|(drive)$/.test(status)) {
+        return res.status(400).send(`Wrong parameter "status". Expected: "started", "stopped" or "drive". Received: "${status}"`);
+    }
+
+    if (!db.garage.find(car => car.id === +id)) {
+        return res.status(404).send('Car with such id was not found in the garage.')
+    }
+
+    const distance = 500000;
+
+    if (status === STATUS.DRIVE) {
+        if (state.blocked[id]) {
+            return res.status(429).send('Drive already in progress. You can\'t run drive for the same car twice while it\'s not stopped.');
+        }
+        
+        const velocity = state.velocity[id];
+
+        if (!velocity) {
+            return res.status(404).send('Engine parameters for car with such id was not found in the garage. Have you tried to set engine status to "started" before?');
+        }
+
+        
+        state.blocked[id] = true;
+
+        const x = Math.round(distance / velocity);
+
+        delete state.velocity[id];        
+
+        if (new Date().getMilliseconds() % 3 === 0) {
+            setTimeout(() => {                
+                delete state.blocked[id];
+                res.header('Content-Type', 'application/json').status(500).send('Car has been stopped suddenly. It\'s engine was broken down.');
+            }, Math.random() * x ^ 0);
+        } else {
+            setTimeout(() => {                
+                delete state.blocked[id];
+                res.header('Content-Type', 'application/json').status(200).send(JSON.stringify({ success: true }));
+            }, x);
+        }
+    } else {
+        const x = req.query.speed ? +req.query.speed : Math.random() * 2000 ^ 0;
+
+        const velocity = status === STATUS.STARTED ? Math.max(50, Math.random() * 200 ^ 0) : 0;
+
+        if (velocity) {
+            state.velocity[id] = velocity;
+        } else {
+            delete state.velocity[id];
+            delete state.blocked[id];
+        }
+
+        setTimeout(() => res.header('Content-Type', 'application/json').status(200).send(JSON.stringify({ velocity, distance })), x);
+    }
 });
-app.post("/api/cars", async (req, res) => {
-  const cars = await loadCars();
-  const newCar = {
-    id: Date.now().toString(),
-    ...req.body,
-    status: "created",
-  };
-  cars.push(newCar);
-  await saveCars(cars);
-  res.status(201).json(newCar);
-});
 
-app.put("/api/cars/:id", async (req, res) => {
-  const cars = await loadCars();
-  const index = cars.findIndex((car) => car.id === req.params.id);
-  if (index !== -1) {
-    cars[index] = { ...cars[index], ...req.body };
-    await saveCars(cars);
-    res.json(cars[index]);
-  } else {
-    res.status(404).json({ error: "Car not found" });
-  }
-});
-
-app.delete("/api/cars/:id", async (req, res) => {
-  const cars = await loadCars();
-  const filtered = cars.filter((car) => car.id !== req.params.id);
-  await saveCars(filtered);
-  res.status(204).send();
-});
-
-// === ЛОГИКА ГОНКИ ===
-app.post("/api/race/:carId", async (req, res) => {
-  const cars = await loadCars();
-  const car = cars.find((c) => c.id === req.params.carId);
-
-  if (!car) {
-    return res.status(404).json({ error: "Car not found" });
-  }
-
-  const raceResult = Math.floor(Math.random() * 3) + 1;
-  if (raceResult === 1) {
-    car.status = "finished";
-    await saveCars(cars);
-    res.json({
-      status: "success",
-      message: "Машинка доехала до финиша! 🏁",
-      progress: 100,
-    });
-  } else if (raceResult === 2) {
-    car.status = "broken";
-    await saveCars(cars);
-    res.json({
-      status: "error",
-      message: "Поломалась на 50% пути 🚧",
-      progress: 50,
-    });
-  } else {
-    car.status = "engine_failed";
-    await saveCars(cars);
-    res.json({
-      status: "failed",
-      message: "Проблемы с двигателем 🚫",
-      progress: 0,
-    });
-  }
-});
-
-app.listen(PORT, () => {
-  console.log(`🚗 Сервер Async Race: http://localhost:${PORT}`);
-  console.log(`📱 API: http://localhost:${PORT}/api/cars`);
+server.use(router);
+server.listen(PORT, () => {
+    console.log('Server is running on port', PORT);
 });
