@@ -1,33 +1,15 @@
 const API_URL = "http://127.0.0.1:3000";
 
-export const fetchCars = async (page = 1, limit = 7) => { ... };
-export const fetchCar = async (id) => { ... };
-export const createCar = async (carDate) => { ... };
-export const updateCar = async (car) => { ... };
-export const deleteCar = async (id) => { ... };
-export const startEngine = async (id) => { ... };
-export const stopEngine = async (id) => { ... };
-export const driveEngine = async (id) => { ... };
-export const sendStatusToServer = async (statusInfo) => { ... };
-export const fetchWinners = async (page = 1, limit = 7, sort = "id", order = "ASC") => { ... };
-export const fetchWinner = async (id) => { ... };
-export const createWinner = async (winnerData) => { ... };
-export const updateWinner = async (id, winnerData) => { ... };
-export const deleteWinner = async (id) => { ... };
-
-
-// import { Car } from "../../components/Garage";
-
-export const fetchCars = async (page: number = 1, limit: number = 7) => {
+export const fetchCars = async (page = 1, limit = 7) => {
   const response = await fetch(
-    `${API_URL}/garage?_page=${page}&_limit=${limit}`
+    `${API_URL}/garage?_page=${page}&_limit=${limit}`,
   );
   const totalCount = response.headers.get("X-Total-Count");
   const data = await response.json();
   return { data, totalCount };
 };
 
-export const fetchCar = async (id: number) => {
+export const fetchCar = async (id) => {
   const response = await fetch(`${API_URL}/garage/${id}`);
   if (response.ok) {
     return await response.json();
@@ -36,7 +18,7 @@ export const fetchCar = async (id: number) => {
   }
 };
 
-export const createCar = async (carDate: { name: string; color: string }) => {
+export const createCar = async (carDate) => {
   const response = await fetch(`${API_URL}/garage/`, {
     method: "POST",
     headers: {
@@ -47,11 +29,7 @@ export const createCar = async (carDate: { name: string; color: string }) => {
   return await response.json();
 };
 
-export const updateCar = async (car: {
-  id: number;
-  name: string;
-  color: string;
-}) => {
+export const updateCar = async (car) => {
   const response = await fetch(`${API_URL}/garage/${car.id}`, {
     method: "PUT",
     headers: {
@@ -62,14 +40,14 @@ export const updateCar = async (car: {
   return await response.json();
 };
 
-export const deleteCar = async (id: number) => {
+export const deleteCar = async (id) => {
   const response = await fetch(`${API_URL}/garage/${id}`, {
     method: "DELETE",
   });
   return response.ok;
 };
 
-export const startEngine = async (id: number) => {
+export const startEngine = async (id) => {
   const response = await fetch(`${API_URL}/engine?id=${id}&status=started`, {
     method: "PATCH",
     headers: {
@@ -86,7 +64,7 @@ export const startEngine = async (id: number) => {
   return await response.json();
 };
 
-export const stopEngine = async (id: number) => {
+export const stopEngine = async (id) => {
   const response = await fetch(`${API_URL}/engine?id=${id}&status=stopped`, {
     method: "PATCH",
     headers: {
@@ -102,7 +80,7 @@ export const stopEngine = async (id: number) => {
   return await response.json();
 };
 
-export const driveEngine = async (id: number) => {
+export const driveEngine = async (id) => {
   const response = await fetch(`${API_URL}/engine?id=${id}&status=drive`, {
     method: "PATCH",
     headers: {
@@ -119,10 +97,7 @@ export const driveEngine = async (id: number) => {
   return await response.json();
 };
 
-export const sendStatusToServer = async (statusInfo: {
-  id: number;
-  status: string;
-}) => {
+export const sendStatusToServer = async (statusInfo) => {
   const { id, status } = statusInfo;
   try {
     await fetch(`${API_URL}/engine?id=${id}&status=${status}`, {
@@ -138,20 +113,20 @@ export const sendStatusToServer = async (statusInfo: {
 };
 
 export const fetchWinners = async (
-  page: number = 1,
-  limit: number = 7,
-  sort: string = "id",
-  order: string = "ASC"
+  page = 1,
+  limit = 7,
+  sort = "id",
+  order = "ASC",
 ) => {
   const response = await fetch(
-    `${API_URL}/winners?_page=${page}&_limit=${limit}&_sort=${sort}&_order=${order}`
+    `${API_URL}/winners?_page=${page}&_limit=${limit}&_sort=${sort}&_order=${order}`,
   );
   const totalCount = response.headers.get("X-Total-Count");
   const data = await response.json();
   return { data, totalCount };
 };
 
-export const fetchWinner = async (id: number) => {
+export const fetchWinner = async (id) => {
   const response = await fetch(`${API_URL}/winners/${id}`);
   if (response.ok) {
     return await response.json();
@@ -160,12 +135,7 @@ export const fetchWinner = async (id: number) => {
   }
 };
 
-export const createWinner = async (winnerData: {
-  id: number;
-  name: string;
-  wins: number;
-  bestTime: number;
-}) => {
+export const createWinner = async (winnerData) => {
   const response = await fetch(`${API_URL}/winners`, {
     method: "POST",
     headers: {
@@ -181,13 +151,7 @@ export const createWinner = async (winnerData: {
   }
 };
 
-export const updateWinner = async (
-  id: number,
-  winnerData: {
-    wins: number;
-    time: number;
-  }
-) => {
+export const updateWinner = async (id, winnerData) => {
   const response = await fetch(`${API_URL}/winners/${id}`, {
     method: "PUT",
     headers: {
@@ -203,7 +167,7 @@ export const updateWinner = async (
   }
 };
 
-export const deleteWinner = async (id: number) => {
+export const deleteWinner = async (id) => {
   const response = await fetch(`${API_URL}/winners/${id}`, {
     method: "DELETE",
   });
@@ -215,7 +179,7 @@ export const deleteWinner = async (id: number) => {
   }
 };
 
-// export const startRase = async (carIds: number[]) => {
+// export const startRase = async (carIds) => {
 //   const response = await fetch(
 //     `${API_URL}/engine?ids=${carIds.join(",")}&status=drive`
 //   );
@@ -230,7 +194,7 @@ export const deleteWinner = async (id: number) => {
 //   return response.json();
 // };
 
-// export async function resetCars(carIds: number[]): Promise<any> {
+// export async function resetCars(carIds) {
 //   const promises = carIds.map((id) =>
 //     fetch(`${API_URL}/engine?id=${id}&status=stopped`)
 //   );
