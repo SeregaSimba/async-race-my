@@ -2,6 +2,7 @@ import { CreateEl } from "../util/functionCreatev";
 import { loadCars, handleSubmitCar, submitUpdate } from "./logic/car";
 import { startAll, startRace, stopRace } from "./logic/start";
 import "./garage.css";
+import { carImg } from "./logic/imagiCar";
 
 const main = document.getElementById("app");
 
@@ -18,6 +19,7 @@ function inputGarage() {
   main.appendChild(titleGarage);
 
   const sectionInput = CreateEl("section", "garageInput");
+  sectionInput.id = "sectionInput";
   main.appendChild(sectionInput);
 
   const titleCreateCar = CreateEl("h2", "titleCreateCar");
@@ -39,9 +41,15 @@ function inputGarage() {
   inputColorCar.placeholder = "color car";
   articleContainerInput.appendChild(inputColorCar);
 
+  const titleContainerCarH2 = CreateEl("h2", "titleContainerCarH2");
+  titleContainerCarH2.innerText = "выбери машинку";
+  sectionInput.appendChild(titleContainerCarH2);
+
+  carImg();
+
   const buttonCreateCar = CreateEl("button", "buttonCreateCar");
   buttonCreateCar.innerText = "submit car";
-  articleContainerInput.appendChild(buttonCreateCar);
+  sectionInput.appendChild(buttonCreateCar);
   buttonCreateCar.addEventListener("click", () => {
     const id = inputNameCar.dataset.carId;
     if (!id) {

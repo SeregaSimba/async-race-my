@@ -47,3 +47,17 @@
   position: relative;
   transition: transform 10000ms linear;
 }
+
+.containerImgCars {
+  display: flex;
+}
+
+.cars1 {
+  rotate: 270deg;
+  width: 3rem;
+}
+
+.cars2 {
+  rotate: 90deg;
+  width: 3rem;
+}
