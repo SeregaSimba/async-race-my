@@ -1,5 +1,49 @@
 .garageInput {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
+}
+
+.articleContainerInput {
+  display: flex;
+  justify-content: space-between;
+  margin: 1rem 0;
+}
+
+.inputNameCar {
+  border: none;
+
+  border-radius: 8px;
+  transition: 2s;
+  box-shadow: 1px 1px 18px 3px black;
+}
+
+.inputNameCar:hover {
+  background-color: gold;
+}
+
+.inputColorCar {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  width: 10vh;
+  height: 10vh;
+  box-shadow: 1px 1px 18px 3px black;
+}
+
+.buttonCreateCar {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  transition: 2s;
+  box-shadow: 1px 1px 18px 3px black;
+}
+
+.buttonCreateCar:hover {
+  background-color: gold;
+}
+
+.car-item {
+  position: relative;
+  transition: transform 10000ms linear;
 }
