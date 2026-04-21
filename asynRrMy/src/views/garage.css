@@ -43,8 +43,26 @@
   background-color: gold;
 }
 
-.car-item {
+.sectionContainerGar {
+  width: 100%;
+}
+
+.sectionCar {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 4rem;
+}
+
+.car-item {
+  display: flex;
+  flex-direction: row;
+}
+
+.carSvg {
+  left: 10rem;
+  position: absolute;
   transition: transform 10000ms linear;
 }
 
@@ -57,7 +75,6 @@
   width: 3rem;
 }
 
-.cars2 {
-  rotate: 90deg;
-  width: 3rem;
+.reducCarImd {
+  background-color: aliceblue;
 }

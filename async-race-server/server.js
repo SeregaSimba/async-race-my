@@ -3,26 +3,48 @@ import jsonServer from "json-server";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 
+const carSvg1 = `<svg width="70" height="70" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="80" cy="80" r="20" />
+    <path d="M 60 80 H 40" />
+    <path d="M 120 80 H 100" />
+    <path d="M 40 80 V 50" />
+    <path d="M 120 80 V 50" />
+    <path d="M 40 80 V 110" />
+    <path d="M 120 80 V 110" />
+    <path d="M 66 55 v 10" />
+    <path d="M 94 55 v 10" />
+    <path d="M 55 70 v 17" />
+    <path d="M 105 70 v 17" />
+    <path d="M 80 45 v 13" />
+    <path d="M 80 80 v 10" />
+  </g>
+</svg>`;
+
 const db = {
   garage: [
     {
       name: "Tesla",
       color: "#e6e6fa",
+      imageCar: carSvg1,
       id: 1,
     },
     {
       name: "BMW",
       color: "#fede00",
+      imageCar: carSvg1,
       id: 2,
     },
     {
       name: "Mercedes",
       color: "#6c779f",
+      imageCar: carSvg1,
       id: 3,
     },
     {
       name: "Ford",
       color: "#ef3c40",
+      imageCar: carSvg1,
       id: 4,
     },
   ],

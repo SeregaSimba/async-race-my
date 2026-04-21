@@ -3,6 +3,7 @@ import { loadCars, handleSubmitCar, submitUpdate } from "./logic/car";
 import { startAll, startRace, stopRace } from "./logic/start";
 import "./garage.css";
 import { carImg } from "./logic/imagiCar";
+import { arrImgContainer } from "./logic/imagiCar";
 
 const main = document.getElementById("app");
 
@@ -35,11 +36,23 @@ function inputGarage() {
   inputNameCar.placeholder = "name car";
   articleContainerInput.appendChild(inputNameCar);
 
+  const reducCarImd = CreateEl("article", "reducCarImd");
+  reducCarImd.id = "reducCarImd";
+  articleContainerInput.appendChild(reducCarImd);
+
   const inputColorCar = CreateEl("input", "inputColorCar");
   inputColorCar.type = "color";
   inputColorCar.id = "colorCar";
   inputColorCar.placeholder = "color car";
   articleContainerInput.appendChild(inputColorCar);
+
+  const buttonApplyColor = CreateEl("button", "buttonApplyColor");
+  buttonApplyColor.innerText = "Применить цвет";
+  articleContainerInput.appendChild(buttonApplyColor);
+  buttonApplyColor.addEventListener("click", () => {
+    const resColor = inputColorCar.value;
+    reducCarImd.style.color = resColor;
+  });
 
   const titleContainerCarH2 = CreateEl("h2", "titleContainerCarH2");
   titleContainerCarH2.innerText = "выбери машинку";

@@ -3,7 +3,7 @@ import { driveEngine, startEngine, stopEngine } from "../../services/api";
 const raceState = {};
 
 function startAll() {
-  const sectionCar = document.querySelectorAll(".car-item");
+  const sectionCar = document.querySelectorAll(".carSvg");
   const promises = [];
 
   sectionCar.forEach((car) => {
@@ -23,7 +23,7 @@ function startAll() {
 }
 
 async function startRace() {
-  const sectionCar = document.querySelectorAll(".car-item");
+  const sectionCar = document.querySelectorAll(".carSvg");
   const promise = [];
   const horizontalPosition = window.innerWidth;
 
@@ -72,7 +72,7 @@ function moveCar(carEl, xDistancePx, durationMs) {
 }
 
 function highlightBroken(id) {
-  const brokenCar = document.querySelector(`.car-item[data-id="${id}"]`);
+  const brokenCar = document.querySelector(`.carSvg[data-id="${id}"]`);
 
   if (brokenCar) {
     brokenCar.style.transform = `rotate(${-5}deg)`;
@@ -106,7 +106,7 @@ function determineWinner() {
 }
 
 function highlightWinner(id) {
-  const winnerCar = document.querySelector(`.car-item[data-id="${id}"]`);
+  const winnerCar = document.querySelector(`.carSvg[data-id="${id}"]`);
 
   if (winnerCar) {
     winnerCar.style.border = "1px solid gold";
@@ -116,7 +116,7 @@ function highlightWinner(id) {
 }
 
 function stopRace() {
-  const sectionCar = document.querySelectorAll(".car-item");
+  const sectionCar = document.querySelectorAll(".carSvg");
 
   sectionCar.forEach((car) => {
     const id = Number(car.dataset.id);

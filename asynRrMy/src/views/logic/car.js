@@ -10,9 +10,7 @@ import {
 } from "../../services/api";
 
 import { CreateEl } from "../../util/functionCreatev";
-
-let startStep = 400;
-const lastStep = 80;
+import { arrImgContainer } from "../logic/imagiCar";
 
 async function loadCars() {
   const sectionCar = document.getElementById("sectionCar");
@@ -21,33 +19,29 @@ async function loadCars() {
   const { data } = await fetchCars(1, 7);
   console.log("Loaded cars from server:", data);
 
-  startStep = 400;
-
-  data.map((e, i) => {
-    renderCar(e, i);
+  data.map((e) => {
+    renderCar(e);
   });
 }
 
-function renderCar(car, i) {
+function renderCar(car) {
   const sectionCar = document.getElementById("sectionCar");
-  const additionalTop = i * lastStep;
 
   const carEl = CreateEl("article", "car-item");
+
   carEl.dataset.id = car.id;
 
   const butEl = CreateEl("article", "butEl");
 
-  butEl.style.position = "absolute";
-  butEl.style.left = "10px";
-  butEl.style.top = `${startStep + additionalTop + 43}px`;
-
-  carEl.style.position = "absolute";
-  carEl.style.left = "10px";
-  carEl.style.top = `${startStep + additionalTop}px`;
-
   const carInfo = CreateEl("p", "car-info");
-  carInfo.innerText = `${car.name}`;
+  carInfo.innerText = `${car.name}: `;
   carInfo.style.color = car.color;
+
+  const carSvg = CreateEl("p", "carSvg");
+  carSvg.id = car.id;
+  carSvg.dataset.id = car.id;
+  carSvg.style.color = car.color;
+  carSvg.innerHTML = car.imageCar;
 
   const buttonDrive = CreateEl("button", "button-drive");
   buttonDrive.innerText = "Drive";
@@ -115,7 +109,7 @@ function renderCar(car, i) {
 
   sectionCar.append(carEl, butEl);
 
-  carEl.append(carInfo);
+  carEl.append(carInfo, carSvg);
   butEl.append(
     buttonStart,
     buttonDrive,
@@ -146,30 +140,35 @@ function handleSubmitCar() {
   const inputNameCar = document.getElementById("nameCar");
   const inputColorCar = document.getElementById("colorCar");
   const titleErrorName = document.getElementById("titleErrorName");
+  const reducCarImd = document.getElementById("reducCarImd");
 
   const name = inputNameCar.value.trim();
   const color = inputColorCar.value;
+  const imageCar = arrImgContainer;
 
-  if (!name || !color) {
+  if (!name || !color || !imageCar) {
     titleErrorName.style.display = "block";
     console.log("ошибка не имя и не цвет");
     return;
   }
 
   titleErrorName.style.display = "none";
+
   const carId = inputNameCar.dataset.carId;
 
   if (carId) {
-    updateCar({ id: carId, name, color })
+    updateCar({ id: carId, name, color, imageCar })
       .then(() => {
+        reducCarImd.innerHTML = "";
         loadCars();
       })
       .catch((err) => {
         console.error("Update car failed:", err);
       });
   } else {
-    createCar({ name, color })
+    createCar({ name, color, imageCar })
       .then(() => {
+        reducCarImd.innerHTML = "";
         inputNameCar.value = "";
         inputColorCar.value = "#000000";
         loadCars();
@@ -178,13 +177,15 @@ function handleSubmitCar() {
         console.error("Create car failed:", err);
       });
   }
-  console.log(name);
-  console.log(color);
+  console.log("name", name);
+  console.log("color", color);
+  console.log("image", imageCar);
 }
 
 function submitUpdate(carId) {
   const inputNameCar = document.getElementById("nameCar");
   const inputColorCar = document.getElementById("colorCar");
+  const reducCarImd = document.getElementById("reducCarImd");
 
   const name = inputNameCar.value.trim();
   const color = inputColorCar.value;
@@ -193,12 +194,12 @@ function submitUpdate(carId) {
     return console.log("ошибка не имя и не цвет");
   }
 
-  updateCar({ id: carId, name, color })
+  updateCar({ id: carId, name, color, imageCar: arrImgContainer })
     .then(() => {
       loadCars();
       inputNameCar.value = "";
       inputColorCar.value = "#000000";
-
+      reducCarImd.innerHTML = "";
       delete inputNameCar.dataset.carId;
     })
     .catch((err) => {
