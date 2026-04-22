@@ -177,9 +177,6 @@ function handleSubmitCar() {
         console.error("Create car failed:", err);
       });
   }
-  console.log("name", name);
-  console.log("color", color);
-  console.log("image", imageCar);
 }
 
 function submitUpdate(carId) {
