@@ -270,25 +270,3 @@ export const deleteWinner = async (id) => {
     throw new Error("Winner not found");
   }
 };
-
-// export const startRase = async (carIds) => {
-//   const response = await fetch(
-//     `${API_URL}/engine?ids=${carIds.join(",")}&status=drive`
-//   );
-
-//   const data = await response.json();
-//   if (data.success) {
-//     const carElement = document.getElementById(`car${carIds}`);
-//     if (carElement) {
-//       carElement.style.transform = `translateX(${10}px)`;
-//     }
-//   }
-//   return response.json();
-// };
-
-// export async function resetCars(carIds) {
-//   const promises = carIds.map((id) =>
-//     fetch(`${API_URL}/engine?id=${id}&status=stopped`)
-//   );
-//   return Promise.all(promises);
-// }

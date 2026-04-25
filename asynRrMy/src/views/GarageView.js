@@ -3,11 +3,12 @@ import { loadCars, handleSubmitCar, submitUpdate } from "./logic/car";
 import { startAll, startRace, stopRace } from "./logic/start";
 import "./garage.css";
 import { carImg } from "./logic/imagiCar";
-import { arrImgContainer } from "./logic/imagiCar";
+import { winnersBor } from "./WinnersView";
 
 const main = document.getElementById("app");
 
 function GarageView() {
+  winnersBor();
   inputGarage();
   sectionButtonRace();
   carGarage();

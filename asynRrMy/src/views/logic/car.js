@@ -18,7 +18,6 @@ async function loadCars() {
 
   const { data } = await fetchCars(1, 7);
   console.log("Loaded cars from server:", data);
-  console.log("Loaded cars from server:", data, "test");
 
   data.map((e) => {
     renderCar(e);

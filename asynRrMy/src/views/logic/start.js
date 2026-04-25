@@ -1,4 +1,11 @@
-import { driveEngine, startEngine, stopEngine } from "../../services/api";
+import {
+  driveEngine,
+  startEngine,
+  stopEngine,
+  fetchWinners,
+  createWinner,
+  updateWinner,
+} from "../../services/api";
 
 const raceState = {};
 
@@ -8,9 +15,7 @@ function startAll() {
 
   sectionCar.forEach((car) => {
     const id = Number(car.dataset.id);
-    const promise = startEngine(id);
-
-    startEngine(id)
+    const promise = startEngine(id)
       .then(() => {
         console.log("Все машинки завелись:", id);
       })
@@ -40,6 +45,7 @@ async function startRace() {
         const durationMs = response.duration || 8000;
         const finishDistancePx = horizontalPosition - 500;
         console.log("Поехал id:", id, "доехал за:", durationMs, "ms");
+
         return moveCar(car, finishDistancePx, durationMs);
       })
       .then(() => {
@@ -67,7 +73,7 @@ function moveCar(carEl, xDistancePx, durationMs) {
   carEl.style.transform = `translateX(${xDistancePx}px)`;
 
   return new Promise((res) => {
-    setTimeout(() => res(), 8000);
+    setTimeout(() => res(), durationMs);
   });
 }
 
@@ -82,7 +88,7 @@ function highlightBroken(id) {
   }
 }
 
-function determineWinner() {
+async function determineWinner() {
   const candidates = Object.entries(raceState).filter(([, data]) => {
     return data.finishTime && !data.isBroken;
   });
@@ -102,7 +108,13 @@ function determineWinner() {
     { id: null, duration: undefined },
   );
   console.log("Победитель машина id:", winners.id, "в", winners.duration, "ms");
+
   highlightWinner(winners.id);
+
+  await saveWinnerAfterRace({
+    id: Number(winners.id),
+    time: Math.round(winners.duration / 1000),
+  });
 }
 
 function highlightWinner(id) {
@@ -149,6 +161,25 @@ function resetCarBrokenStyles(carEl) {
   carEl.style.backgroundColor = "";
   carEl.style.transform = "";
   carEl.innerHTML = carEl.innerHTML.replace(" 💣 Сломалась", "");
+}
+
+async function saveWinnerAfterRace({ id, time }) {
+  const response = await fetchWinners(1, 100, "wins", "DESC");
+  const existing = response.data.find((item) => item.id === id);
+
+  if (existing) {
+    return await updateWinner(id, {
+      ...existing,
+      wins: existing.wins + 1,
+      time,
+    });
+  }
+
+  return await createWinner({
+    id,
+    wins: 1,
+    time,
+  });
 }
 
 export { startAll, startRace, stopRace };
